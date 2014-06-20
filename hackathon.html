@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.8/d3.min.js"></script>
+  <head>
+
+  </head>
+  <body>
+  <script>
+
+    var userMove = {'left': 0, 'right': 0};
+
+    var road = d3.select('body').append('svg').attr('width', '100%').attr('height', 200);
+    road.style('background-color', 'whitesmoke')
+        .style('margin-top', '300px')
+        .style('display', 'block');
+
+
+    var user = road.selectAll('circle').data([5]).enter()
+    .append('circle')
+    .attr('cx', function(d) { return 100})
+    .attr('cy', function(d) { return 100})
+    .attr('r', 10)
+    .style('fill', 'red')
+
+    var cop = road.selectAll('#cop').data([5]).enter()
+    .append('rect')
+    .attr('x', function(d) { return 200})
+    .attr('y', function(d) { return 100})
+    .attr('width', 30)
+    .attr('height', 15)
+    .style('fill', 'blue');
+
+    var van = road.selectAll('#van').data([5]).enter()
+    .append('rect')
+    .attr('x', function(d) { return 300})
+    .attr('y', function(d) { return 100})
+    .attr('width', 30)
+    .attr('height', 15)
+    .style('fill', 'brown');
+
+    var taxi = road.selectAll('#taxi').data([5]).enter()
+    .append('rect')
+    .attr('x', function(d) { return 400})
+    .attr('y', function(d) { return 100})
+    .attr('width', 30)
+    .attr('height', 15)
+    .style('fill', 'yellow');
+
+    user.call(d3.behavior.drag().on("drag", function() {
+      if(d3.event.defaultPrevented) return;
+
+      d3.select(this).attr('cx', d3.event.x);
+    }));
+
+    var move = function() {
+      console.log("test")
+      van.transition()
+        .duration(1000)
+        .attr('x', Math.random() * 1000);
+
+      cop.transition()
+        .duration(1000)
+        .attr('x', Math.random() * 1000);
+
+      taxi.transition()
+        .duration(1000)
+        .attr('x', Math.random() * 1000);
+    };
+    setInterval(move, 1000);
+
+
+
+    var collision = function() {
+
+      var userX = user.attr('cx');
+
+      var copX = cop.attr('x');
+      if(copX - userX < 10) {
+        console.log("hit cop, JAIL!");
+      }
+
+      var vanX = van.attr('x');
+      if(vanX - userX < 10) {
+        alert("Game Over");
+      }
+
+      var taxiX = taxi.attr('x');
+      if(taxiX - userX < 10) {
+        alert("take taxi!");
+      }
+    };
+
+    setInterval(collision, 10);
+
+
+  </script>
+  <svg>
+    <rect id = 'van'></rect>
+    <rect id = 'cop'></rect>
+    <rect id = 'taxi'></rect>
+  <svg>
+</body>
+</html>
